@@ -7,7 +7,7 @@ CONCAT(
 ir.id AS matricula,
 irs.id AS conjunto,
 COALESCE(iv.board,it.board,itt.board) AS placa,
-COALESCE(iv.chassi,it.chassi,itt.chassi) AS "chassi",
+COALESCE(iv.chassi,it.chassi,itt.chassi) as chassi,
 iss.description AS "status",
 CAST(COALESCE(irsc.date_initial_effect,date_add('year',-1,irsc.date_final_effect)) AS DATE) AS data_ativacao,
 'Segtruck' AS cooperativa
@@ -25,13 +25,12 @@ LEFT JOIN silver.insurance_trailer itt ON itt.id=irsct.id_trailer
 WHERE iss.description = 'ATIVO'
 AND COALESCE(iv.board,it.board,itt.board) IS NOT NULL
 AND COALESCE(iv.chassi,it.chassi,itt.chassi) IS NOT NULL
-AND CAST(COALESCE(irs.DATE_INITAL_EFFECT,date_add('year', -1, irs.DATE_FINAL_EFFECT)) AS DATE) = date_add('day', -1, current_date)
-AND irs.id_renovated_set > 0 
 
 
---------------------------------------------------------------------------
+---------------------------------------------------------------------------------
 UNION ALL
---------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+
 
 SELECT DISTINCT
 CONCAT(
@@ -42,8 +41,8 @@ CONCAT(
 ir.id AS matricula,
 irs.id AS conjunto,
 COALESCE(iv.board,it.board,itt.board) AS placa,
-COALESCE(iv.chassi,it.chassi,itt.chassi) AS "chassi",
-iss.description AS "status",
+COALESCE(iv.chassi,it.chassi,itt.chassi) as chassi,
+iss.description,
 CAST(COALESCE(irsc.date_initial_effect,date_add('year',-1,irsc.date_final_effect)) AS DATE) AS data_ativacao,
 'Stcoop' AS cooperativa
 
@@ -60,12 +59,11 @@ LEFT JOIN stcoop.insurance_trailer itt ON itt.id=irsct.id_trailer
 WHERE iss.description = 'ATIVO'
 AND COALESCE(iv.board,it.board,itt.board) IS NOT NULL
 AND COALESCE(iv.chassi,it.chassi,itt.chassi) IS NOT NULL
-AND CAST(COALESCE(irs.DATE_INITAL_EFFECT,date_add('year', -1, irs.DATE_FINAL_EFFECT)) AS DATE) = date_add('day', -1, current_date)
-AND irs.id_renovated_set > 0 
 
---------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------
 UNION ALL
---------------------------------------------------------------------------
+---------------------------------------------------------------------------------
 
 
 SELECT DISTINCT
@@ -77,11 +75,10 @@ CONCAT(
 ir.id AS matricula,
 irs.id AS conjunto,
 COALESCE(iv.board,it.board,itt.board) AS placa,
-COALESCE(iv.chassi,it.chassi,itt.chassi) AS "chassi",
-iss.description AS "status",
+COALESCE(iv.chassi,it.chassi,itt.chassi) as chassi,
+iss.description,
 CAST(COALESCE(irsc.date_initial_effect,date_add('year',-1,irsc.date_final_effect)) AS DATE) AS data_ativacao,
 'Viavante' AS cooperativa
-
 
 FROM viavante.insurance_registration ir 
 LEFT JOIN viavante.insurance_reg_set irs ON irs.parent = ir.id
@@ -95,5 +92,8 @@ LEFT JOIN viavante.insurance_trailer itt ON itt.id=irsct.id_trailer
 WHERE iss.description = 'ATIVO'
 AND COALESCE(iv.board,it.board,itt.board) IS NOT NULL
 AND COALESCE(iv.chassi,it.chassi,itt.chassi) IS NOT NULL
-AND CAST(COALESCE(irs.DATE_INITAL_EFFECT,date_add('year', -1, irs.DATE_FINAL_EFFECT)) AS DATE) = date_add('day', -1, current_date)
-AND irs.id_renovated_set > 0 
+
+
+
+
+

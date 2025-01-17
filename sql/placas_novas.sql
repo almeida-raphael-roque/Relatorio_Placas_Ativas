@@ -1,146 +1,99 @@
 SELECT DISTINCT
-    coalesce(iv.BOARD,it.BOARD,itt.BOARD) as "placa",
-    coalesce(iv.chassi,it.chassi,itt.chassi) as "chassi",
-    coalesce(iv.id,it.id,itt.id) as "id_placa",
-    coalesce(irsc.ID_VEHICLE) as "id_veiculo",
-    coalesce(irsct.ID_TRAILER) as "id_carroceria",
-    ir.id as "Matricula",
-    irs.id as "Conjunto",
-    cata.fantasia as "Unidade",
-    iss.description as "Status",
-    cat.nome as "Cliente",
-    irs.data_registration  as "Data",
-    cast(coalesce(irs.DATE_INITAL_EFFECT,date_add('day', -364, irs.DATE_FINAL_EFFECT)) as date) as "data_ativacao",
-    user_name.suporte as "Suporte",
-    current_date AS "data_filtro",
-    'Segtruck' as empresa
-    
-from silver.insurance_registration ir --alterada fonte da base de dados
-        left outer join silver.insurance_reg_set irs on irs.parent = ir.id
-        left outer join silver.cliente clie on clie.codigo = ir.CUSTOMER_ID
-        left outer join silver.catalogo cat on cat.cnpj_cpf = clie.cnpj_cpf
-        left outer join silver.representante r on r.codigo = irs.id_unity
-        left outer join silver.catalogo cata on cata.cnpj_cpf = r.cnpj_cpf
-        left outer join silver.insurance_status iss on iss.id = irs.id_status
-        left outer join silver.INSURANCE_REG_SET_COVERAGE irsc ON irsc.PARENT = irs.ID
-        left outer join silver.INSURANCE_VEHICLE iv on iv.ID = irsc.ID_VEHICLE
-        left outer join silver.TIPO_VEICULO tv on tv.CODIGO = iv.CODE_TYPE_VEHICLE 
-        left outer join silver.INSURANCE_REG_SET_COV_TRAILER irsct on irsct.PARENT = irsc.ID
-        left outer join silver.INSURANCE_TRAILER it on it.ID = irsct.ID_TRAILER
-        left outer join silver.insurance_trailer itt on itt.id = irsc.ID_TRAILER
-        left outer join (
-        select distinct irs.id as conjunto,
-            wb.user_name as suporte
-    
-            from silver.insurance_reg_set irs 
-                inner join silver.web_user wb on wb.id = irs.id_user_support
-            ) as user_name on user_name.conjunto = irs.id
-            
-
-where cast(coalesce(irs.DATE_INITAL_EFFECT,date_add('day', -364, irs.DATE_FINAL_EFFECT)) as date) = date_add('day', -1, current_date)
-and iss.id = 7 --pega só os ativos
-and irs.id_renovated_set = 0 
-and coalesce(iv.chassi,it.chassi,itt.chassi) is not null
-and coalesce(iv.BOARD,it.BOARD,itt.BOARD) is not null
+CONCAT(
+    CAST(ir.id AS VARCHAR),
+    CAST(irs.id AS VARCHAR),
+    '1'
+) AS id_conjunto,
+ir.id AS matricula,
+irs.id AS conjunto,
+COALESCE(iv.board,it.board,itt.board) AS placa,
+COALESCE(iv.chassi,it.chassi,itt.chassi) AS "chassi",
+iss.description AS "status",
+CAST(COALESCE(irsc.date_initial_effect,date_add('year',-1,irsc.date_final_effect)) AS DATE) AS data_ativacao,
+'Segtruck' AS cooperativa
 
 
-------------------------------------------------------------------------------------
+FROM silver.insurance_registration ir 
+LEFT JOIN silver.insurance_reg_set irs ON irs.parent = ir.id
+LEFT JOIN silver.insurance_reg_set_coverage irsc ON irsc.parent = irs.id
+LEFT JOIN silver.insurance_reg_set_cov_trailer irsct ON irsct.parent = irsc.id
+LEFT JOIN silver.insurance_status iss ON iss.id=irs.id_status
+LEFT JOIN silver.insurance_vehicle iv ON iv.id=irsc.id_vehicle
+LEFT JOIN silver.insurance_trailer it ON it.id=irsc.id_trailer
+LEFT JOIN silver.insurance_trailer itt ON itt.id=irsct.id_trailer
+
+WHERE iss.description = 'ATIVO'
+AND COALESCE(iv.board,it.board,itt.board) IS NOT NULL
+AND COALESCE(iv.chassi,it.chassi,itt.chassi) IS NOT NULL
+AND CAST(COALESCE(irs.DATE_INITAL_EFFECT,date_add('year', -1, irs.DATE_FINAL_EFFECT)) AS DATE) = date_add('day', -1, current_date)
+AND irs.id_renovated_set = 0 
+
+
+--------------------------------------------------------------------------
 UNION ALL
-------------------------------------------------------------------------------------
+--------------------------------------------------------------------------
+
+SELECT DISTINCT
+CONCAT(
+    CAST(ir.id AS VARCHAR),
+    CAST(irs.id AS VARCHAR),
+    '2'
+) AS id_conjunto,
+ir.id AS matricula,
+irs.id AS conjunto,
+COALESCE(iv.board,it.board,itt.board) AS placa,
+COALESCE(iv.chassi,it.chassi,itt.chassi) AS "chassi",
+iss.description AS "status",
+CAST(COALESCE(irsc.date_initial_effect,date_add('year',-1,irsc.date_final_effect)) AS DATE) AS data_ativacao,
+'Stcoop' AS cooperativa
+
+
+FROM stcoop.insurance_registration ir 
+LEFT JOIN stcoop.insurance_reg_set irs ON irs.parent = ir.id
+LEFT JOIN stcoop.insurance_reg_set_coverage irsc ON irsc.parent = irs.id
+LEFT JOIN stcoop.insurance_reg_set_cov_trailer irsct ON irsct.parent = irsc.id
+LEFT JOIN stcoop.insurance_status iss ON iss.id=irs.id_status
+LEFT JOIN stcoop.insurance_vehicle iv ON iv.id=irsc.id_vehicle
+LEFT JOIN stcoop.insurance_trailer it ON it.id=irsc.id_trailer
+LEFT JOIN stcoop.insurance_trailer itt ON itt.id=irsct.id_trailer
+
+WHERE iss.description = 'ATIVO'
+AND COALESCE(iv.board,it.board,itt.board) IS NOT NULL
+AND COALESCE(iv.chassi,it.chassi,itt.chassi) IS NOT NULL
+AND CAST(COALESCE(irs.DATE_INITAL_EFFECT,date_add('year', -1, irs.DATE_FINAL_EFFECT)) AS DATE) = date_add('day', -1, current_date)
+AND irs.id_renovated_set = 0 
+
+--------------------------------------------------------------------------
+UNION ALL
+--------------------------------------------------------------------------
 
 
 SELECT DISTINCT
-    coalesce(iv.BOARD,it.BOARD,itt.BOARD) as "placa",
-    coalesce(iv.chassi,it.chassi,itt.chassi) as "chassi",
-    coalesce(iv.id,it.id,itt.id) as "id_placa",
-    coalesce(irsc.ID_VEHICLE) as "id_veiculo",
-    coalesce(irsct.ID_TRAILER) as "id_carroceria",
-    ir.id as "Matricula",
-    irs.id as "Conjunto",
-    cata.fantasia as "Unidade",
-    iss.description as "Status",
-    cat.nome as "Cliente",
-    irs.data_registration  as "Data",
-    cast(coalesce(irs.DATE_INITAL_EFFECT,date_add('day', -364, irs.DATE_FINAL_EFFECT)) as date) as "data_ativacao",
-    user_name.suporte as "Suporte",
-    current_date AS "data_filtro",
-    'Stcoop' as empresa
-    
-from stcoop.insurance_registration ir --alterada fonte da base de dados
-        left outer join stcoop.insurance_reg_set irs on irs.parent = ir.id
-        left outer join stcoop.cliente clie on clie.codigo = ir.CUSTOMER_ID
-        left outer join stcoop.catalogo cat on cat.cnpj_cpf = clie.cnpj_cpf
-        left outer join stcoop.representante r on r.codigo = irs.id_unity
-        left outer join stcoop.catalogo cata on cata.cnpj_cpf = r.cnpj_cpf
-        left outer join stcoop.insurance_status iss on iss.id = irs.id_status
-        left outer join stcoop.INSURANCE_REG_SET_COVERAGE irsc ON irsc.PARENT = irs.ID
-        left outer join stcoop.INSURANCE_VEHICLE iv on iv.ID = irsc.ID_VEHICLE
-        left outer join stcoop.TIPO_VEICULO tv on tv.CODIGO = iv.CODE_TYPE_VEHICLE 
-        left outer join stcoop.INSURANCE_REG_SET_COV_TRAILER irsct on irsct.PARENT = irsc.ID
-        left outer join stcoop.INSURANCE_TRAILER it on it.ID = irsct.ID_TRAILER
-        left outer join stcoop.insurance_trailer itt on itt.id = irsc.ID_TRAILER
-        left outer join (
-        select distinct irs.id as conjunto,
-            wb.user_name as suporte
-    
-            from stcoop.insurance_reg_set irs 
-                inner join stcoop.web_user wb on wb.id = irs.id_user_support
-            ) as user_name on user_name.conjunto = irs.id
-            
-
-where cast(coalesce(irs.DATE_INITAL_EFFECT,date_add('day', -364, irs.DATE_FINAL_EFFECT)) as date) = date_add('day', -1, current_date)
-and iss.id = 7 --pega só os ativos
-and irs.id_renovated_set = 0 
-and coalesce(iv.chassi,it.chassi,itt.chassi) is not null
-and coalesce(iv.BOARD,it.BOARD,itt.BOARD) is not null
+CONCAT(
+    CAST(ir.id AS VARCHAR),
+    CAST(irs.id AS VARCHAR),
+    '3'
+) AS id_conjunto,
+ir.id AS matricula,
+irs.id AS conjunto,
+COALESCE(iv.board,it.board,itt.board) AS placa,
+COALESCE(iv.chassi,it.chassi,itt.chassi) AS "chassi",
+iss.description AS "status",
+CAST(COALESCE(irsc.date_initial_effect,date_add('year',-1,irsc.date_final_effect)) AS DATE) AS data_ativacao,
+'Viavante' AS cooperativa
 
 
-------------------------------------------------------------------------------------
-UNION ALL
-------------------------------------------------------------------------------------
+FROM viavante.insurance_registration ir 
+LEFT JOIN viavante.insurance_reg_set irs ON irs.parent = ir.id
+LEFT JOIN viavante.insurance_reg_set_coverage irsc ON irsc.parent = irs.id
+LEFT JOIN viavante.insurance_reg_set_cov_trailer irsct ON irsct.parent = irsc.id
+LEFT JOIN viavante.insurance_status iss ON iss.id=irs.id_status
+LEFT JOIN viavante.insurance_vehicle iv ON iv.id=irsc.id_vehicle
+LEFT JOIN viavante.insurance_trailer it ON it.id=irsc.id_trailer
+LEFT JOIN viavante.insurance_trailer itt ON itt.id=irsct.id_trailer
 
-
-SELECT DISTINCT
-    coalesce(iv.BOARD,it.BOARD,itt.BOARD) as "placa",
-    coalesce(iv.chassi,it.chassi,itt.chassi) as "chassi",
-    coalesce(iv.id,it.id,itt.id) as "id_placa",
-    coalesce(irsc.ID_VEHICLE) as "id_veiculo",
-    coalesce(irsct.ID_TRAILER) as "id_carroceria",
-    ir.id as "Matricula",
-    irs.id as "Conjunto",
-    cata.fantasia as "Unidade",
-    iss.description as "Status",
-    cat.nome as "Cliente",
-    irs.data_registration  as "Data",
-    cast(coalesce(irs.DATE_INITAL_EFFECT,date_add('day', -364, irs.DATE_FINAL_EFFECT)) as date) as "data_ativacao",
-    user_name.suporte as "Suporte",
-    current_date AS "data_filtro",
-    'Viavante' as empresa
-    
-from viavante.insurance_registration ir --alterada fonte da base de dados
-        left outer join viavante.insurance_reg_set irs on irs.parent = ir.id
-        left outer join viavante.cliente clie on clie.codigo = ir.CUSTOMER_ID
-        left outer join viavante.catalogo cat on cat.cnpj_cpf = clie.cnpj_cpf
-        left outer join viavante.representante r on r.codigo = irs.id_unity
-        left outer join viavante.catalogo cata on cata.cnpj_cpf = r.cnpj_cpf
-        left outer join viavante.insurance_status iss on iss.id = irs.id_status
-        left outer join viavante.INSURANCE_REG_SET_COVERAGE irsc ON irsc.PARENT = irs.ID
-        left outer join viavante.INSURANCE_VEHICLE iv on iv.ID = irsc.ID_VEHICLE
-        left outer join viavante.TIPO_VEICULO tv on tv.CODIGO = iv.CODE_TYPE_VEHICLE 
-        left outer join viavante.INSURANCE_REG_SET_COV_TRAILER irsct on irsct.PARENT = irsc.ID
-        left outer join viavante.INSURANCE_TRAILER it on it.ID = irsct.ID_TRAILER
-        left outer join viavante.insurance_trailer itt on itt.id = irsc.ID_TRAILER
-        left outer join (
-        select distinct irs.id as conjunto,
-            wb.user_name as suporte
-    
-            from viavante.insurance_reg_set irs 
-                inner join viavante.web_user wb on wb.id = irs.id_user_support
-            ) as user_name on user_name.conjunto = irs.id
-            
-
-where cast(coalesce(irs.DATE_INITAL_EFFECT,date_add('day', -364, irs.DATE_FINAL_EFFECT)) as date) = date_add('day', -1, current_date)
-and iss.id = 7 --pega só os ativos
-and irs.id_renovated_set = 0 
-and coalesce(iv.chassi,it.chassi,itt.chassi) is not null
-and coalesce(iv.BOARD,it.BOARD,itt.BOARD) is not null
+WHERE iss.description = 'ATIVO'
+AND COALESCE(iv.board,it.board,itt.board) IS NOT NULL
+AND COALESCE(iv.chassi,it.chassi,itt.chassi) IS NOT NULL
+AND CAST(COALESCE(irs.DATE_INITAL_EFFECT,date_add('year', -1, irs.DATE_FINAL_EFFECT)) AS DATE) = date_add('day', -1, current_date)
+AND irs.id_renovated_set = 0 
