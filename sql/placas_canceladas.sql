@@ -22,16 +22,16 @@ LEFT JOIN silver.insurance_vehicle iv ON iv.id=irsc.id_vehicle
 LEFT JOIN silver.insurance_trailer it ON it.id=irsc.id_trailer
 LEFT JOIN silver.insurance_trailer itt ON itt.id=irsct.id_trailer
 
-WHERE iss.id = 7
+WHERE iss.id = 8
 AND COALESCE(iv.board,it.board,itt.board) IS NOT NULL
 AND COALESCE(iv.chassi,it.chassi,itt.chassi) IS NOT NULL
 AND CAST(COALESCE(irs.DATE_INITAL_EFFECT,date_add('year', -1, irs.DATE_FINAL_EFFECT)) AS DATE) = date_add('day', -1, current_date)
-AND irs.id_renovated_set > 0 
-
+ 
 
 --------------------------------------------------------------------------
 UNION ALL
 --------------------------------------------------------------------------
+
 
 SELECT DISTINCT
 CONCAT(
@@ -57,11 +57,11 @@ LEFT JOIN stcoop.insurance_vehicle iv ON iv.id=irsc.id_vehicle
 LEFT JOIN stcoop.insurance_trailer it ON it.id=irsc.id_trailer
 LEFT JOIN stcoop.insurance_trailer itt ON itt.id=irsct.id_trailer
 
-WHERE iss.id = 7
+WHERE iss.id = 8
 AND COALESCE(iv.board,it.board,itt.board) IS NOT NULL
 AND COALESCE(iv.chassi,it.chassi,itt.chassi) IS NOT NULL
 AND CAST(COALESCE(irs.DATE_INITAL_EFFECT,date_add('year', -1, irs.DATE_FINAL_EFFECT)) AS DATE) = date_add('day', -1, current_date)
-AND irs.id_renovated_set > 0 
+ 
 
 --------------------------------------------------------------------------
 UNION ALL
@@ -92,8 +92,8 @@ LEFT JOIN viavante.insurance_vehicle iv ON iv.id=irsc.id_vehicle
 LEFT JOIN viavante.insurance_trailer it ON it.id=irsc.id_trailer
 LEFT JOIN viavante.insurance_trailer itt ON itt.id=irsct.id_trailer
 
-WHERE iss.id = 7
+WHERE iss.id = 8
 AND COALESCE(iv.board,it.board,itt.board) IS NOT NULL
 AND COALESCE(iv.chassi,it.chassi,itt.chassi) IS NOT NULL
 AND CAST(COALESCE(irs.DATE_INITAL_EFFECT,date_add('year', -1, irs.DATE_FINAL_EFFECT)) AS DATE) = date_add('day', -1, current_date)
-AND irs.id_renovated_set > 0 
+ 

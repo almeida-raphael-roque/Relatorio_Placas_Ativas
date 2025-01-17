@@ -48,10 +48,10 @@ class Load_relat_ativ_pend:
             wb.close()
 
             # PASSANDO ARQUIVO PARA O DIRETÓRIO DO SHAREPOINT
-            file_path = r'C:\Users\raphael.almeida\Documents\Ativações Placas\report\ACOMPANHAMENTO_ATIVACOES.xlsx'
-            destination_dir  = r'C:\Users\raphael.almeida\Grupo Unus\analise de dados - Arquivos em excel'
-            destination_path = os.path.join(destination_dir, os.path.basename(file_path))
-            shutil.copy(file_path, destination_path)
+            #file_path = r'C:\Users\raphael.almeida\Documents\Ativações Placas\report\ACOMPANHAMENTO_ATIVACOES.xlsx'
+            #destination_dir  = r'C:\Users\raphael.almeida\Grupo Unus\analise de dados - Arquivos em excel'
+            #destination_path = os.path.join(destination_dir, os.path.basename(file_path))
+            #shutil.copy(file_path, destination_path)
 
             logging.info('\n ----------------------------------------------------------------------------------')
             logging.info('\n Processo de Carregamento de Dados concluido com sucesso!')

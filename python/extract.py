@@ -4,7 +4,7 @@ import logging
 
 
 logging.info('\n ----------------------------------------------------------------------------------')
-logging.info('\n Executando Rotina - RELATORIO ATIVACOES PENDENTES')
+logging.info('\n Executando Rotina - RELATÓRIO DE PLACAS ATIVADAS')
 
 class Extract:
     def __init__(self) -> None:
@@ -14,7 +14,7 @@ class Extract:
 
         try:
 
-            dir_query = r'C:\Users\raphael.almeida\Documents\Ativações Placas\sql\placas_novas.sql'
+            dir_query = r'C:\Users\raphael.almeida\Documents\Ativações Placas\Relatório de Placas Ativadas\sql\placas_novas.sql'
 
             with open(dir_query, 'r') as file:
                 query = file.read()
@@ -36,7 +36,7 @@ class Extract:
 
         try:
 
-            dir_query = r'C:\Users\raphael.almeida\Documents\Ativações Placas\sql\placas_renovadas.sql'
+            dir_query = r'C:\Users\raphael.almeida\Documents\Ativações Placas\Relatório de Placas Ativadas\sql\placas_renovadas.sql'
 
             with open(dir_query, 'r') as file:
                 query = file.read()
@@ -58,7 +58,7 @@ class Extract:
 
         try:
 
-            dir_query = r'C:\Users\raphael.almeida\Documents\Ativações Placas\sql\placas_total.sql'
+            dir_query = r'C:\Users\raphael.almeida\Documents\Ativações Placas\Relatório de Placas Ativadas\sql\placas_total_ordem.sql'
 
             with open(dir_query, 'r') as file:
                 query = file.read()

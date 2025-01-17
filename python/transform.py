@@ -50,15 +50,15 @@ class Transform:
                     (df_mig_all_placas['chassi'] == row['chassi'])
                 ]
 
-                if not df_filtred.empty and len(df_filtred['empresa'].values) > 1:
+                if not df_filtred.empty and len(df_filtred['cooperativa'].values) > 1:
 
-                    if df_filtred['empresa'].values[1] != row['empresa']:
+                    if df_filtred['cooperativa'].values[1] != row['cooperativa']:
                         df_final.at[idx, 'status'] = 'MIGRAÇÃO'
 
-                        if df_filtred['empresa'].values[1] == 'Segtruck':
+                        if df_filtred['cooperativa'].values[1] == 'Segtruck':
                             df_final.at[idx, 'migration_from'] = 'Segtruck'
 
-                        elif df_filtred['empresa'].values[1] == 'Stcoop':
+                        elif df_filtred['cooperativa'].values[1] == 'Stcoop':
                             df_final.at[idx, 'migration_from'] = 'Stcoop'
                         else:
                             df_final.at[idx, 'migration_from'] = 'Viavante'
@@ -87,22 +87,14 @@ class Transform:
             logging.info(traceback.format_exc())
             
         try:
-
-            df_final['placa'] = df_final['placa'].fillna('SEM-PLACA')
-            df_final['chassi'] = df_final['chassi'].fillna('NULL')
-            df_final['id_placa'] = df_final['id_placa'].fillna(0)
-            df_final['id_veiculo'] = df_final['id_veiculo'].fillna(0)
-            df_final['id_carroceria'] = df_final['id_carroceria'].fillna(0)
+            df_final['id_conjunto'] = df_final['id_conjunto'].fillna(0)
             df_final['matricula'] = df_final['matricula'].fillna(0)
             df_final['conjunto'] = df_final['conjunto'].fillna(0)
-            df_final['unidade'] = df_final['unidade'].fillna('NULL')
+            df_final['placa'] = df_final['placa'].fillna('SEM-PLACA')
+            df_final['chassi'] = df_final['chassi'].fillna('NULL')
             df_final['status'] = df_final['status'].fillna('NULL')
-            df_final['cliente'] = df_final['cliente'].fillna('NULL')
-            df_final['data'] = df_final['data'].fillna(pd.Timestamp('1900-01-01'))
             df_final['data_ativacao'] = df_final['data_ativacao'].fillna(pd.Timestamp('1900-01-01'))
-            df_final['suporte'] = df_final['suporte'].fillna('NULL')
-            df_final['data_filtro'] = df_final['data_filtro'].fillna(pd.Timestamp('1900-01-01'))
-            df_final['empresa'] = df_final['empresa'].fillna('NULL')
+            df_final['cooperativa'] = df_final['cooperativa'].fillna('NULL')
             df_final['migration_from'] = df_final['migration_from'].fillna('NULL')
 
             
