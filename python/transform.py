@@ -17,26 +17,30 @@ class Transform:
 
             df_ativ = Extract.extract_ativacoes()
             df_renov = Extract.extract_renovacoes()
+            df_cancel = Extract.extract_renovacoes()
             df_mig_all_placas = Extract.extract_conf_migracoes()
 
 
-            # CRIANDO DATAFRAME FINAIL VIAVANTE (VERIFICANDO RENOVAÇÕES)
+            # JUNTANDO OS DATAFRAMES
             if not df_renov.empty:
                 df_renov['status'] = 'RENOVAÇÃO'
                 df_final = pd.concat([df_ativ, df_renov])
-
             else:
-
                 df_final = df_ativ
+            
+            if not df_cancel.empty:
+                df_final = pd.concat([df_final,df_cancel])
+            else:
+                df_final
 
         except Exception as e:
 
             logging.info('\n ----------------------------------------------------------------------------------')
-            logging.info(f'Falha ao atualizar placas referente às renovações: {e}')
+            logging.info(f'Falha ao juntar os dataframes: {e}')
 
         try:
 
-            # CRIANDO DATAFRAME FINAIL VIAVANTE (VERIFICANDO MIGRAÇÕES)
+            # CRIANDO DATAFRAME FINAL
 
             # CRIANDO COLUNA DE MIGRAÇÃO (MIGRATION_FROM)
             df_final['migration_from'] = None
@@ -52,7 +56,7 @@ class Transform:
 
                 if not df_filtred.empty and len(df_filtred['cooperativa'].values) > 1:
 
-                    if df_filtred['cooperativa'].values[1] != row['cooperativa']:
+                    if df_filtred['cooperativa'].values[1] != row['cooperativa'] and row['status'] != 'CANCELADO':
                         df_final.at[idx, 'status'] = 'MIGRAÇÃO'
 
                         if df_filtred['cooperativa'].values[1] == 'Segtruck':

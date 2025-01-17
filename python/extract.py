@@ -54,6 +54,28 @@ class Extract:
             logging.info(f'\n Falha ao Extrair relatorio renovacoes (Viavante): {e}')
 
 
+    def extract_cancelamentos():
+
+        try:
+
+            dir_query = r'C:\Users\raphael.almeida\Documents\Ativações Placas\Relatório de Placas Ativadas\sql\placas_canceladas.sql'
+
+            with open(dir_query, 'r') as file:
+                query = file.read()
+
+            df_cancel = awr.athena.read_sql_query(query, database='silver')
+        
+            logging.info('\n ----------------------------------------------------------------------------------')
+            logging.info('\n Relatorio renovacoes (Vivante)  - Dados Extraidos com sucesso!')
+
+            return df_cancel
+
+        except Exception as e:
+
+            logging.info('\n ----------------------------------------------------------------------------------')
+            logging.info(f'\n Falha ao Extrair relatorio renovacoes (Viavante): {e}')
+
+
     def extract_conf_migracoes():
 
         try:
