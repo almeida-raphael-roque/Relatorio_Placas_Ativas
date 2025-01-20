@@ -106,15 +106,17 @@
 
 4) Todos os equívocos no código ETL em python foram corrigidos;
 
-5) Por gerar duas bases de dados, uma para movimentação de placas e a outra para comppsição total de placas simplificou-se o posterior tratamento dos dados no Power Query;
+5) Por gerar duas bases de dados, uma para movimentação de placas e a outra para composição total de placas simplificou-se o posterior tratamento dos dados no Power Query;
 
-6) Todas as alterações permitiram a construção de um dashboar muito mais organizado, "leve" e coerente com a real situação das placas.
+6) Todas as alterações permitiram a construção de um dashboard muito mais organizado, "leve" e coerente com a real situação das placas.
 
 7) Todas as etapas estão organizadas e limpas para entendimento e rastreabilidade
 
 8) Os passos somados levaram a reduzir o tempo de atualização do relatório completo de 20 minutos (15' Power BI + 5' Python) para 2' 30", total. Uma redução de 87,5% no tempo total gasto para atualizar;
 
 9) O relatório final contempla a correta situação de placas nas 3 cooperativas.
+
+10) A gerência e diretoria conseguem analisar com segurança e confiabilidade a situação de placas na empresa, tomar melhores decisões se baseando no relatório disponibilzado e, consequentemente, aumentar o faturamento da empresa. 
 
 <br><br>
 
