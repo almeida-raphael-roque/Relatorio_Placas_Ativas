@@ -85,7 +85,7 @@ class Extract:
             with open(dir_query, 'r') as file:
                 query = file.read()
 
-            df_migracoes_placas = awr.athena.read_sql_query(query, database='silver')
+            df_all_placas = awr.athena.read_sql_query(query, database='silver')
         
             logging.info('\n ----------------------------------------------------------------------------------')
             logging.info('\n Relatorio renovacoes(Stcoop)  - Dados Extraidos com sucesso!')
@@ -93,7 +93,7 @@ class Extract:
             logging.info('\n ----------------------------------------------------------------------------------')
             logging.info('\n Processo de Extracao de Dados concluido com sucesso!')
 
-            return df_migracoes_placas
+            return df_all_placas
 
         except Exception as e:
 

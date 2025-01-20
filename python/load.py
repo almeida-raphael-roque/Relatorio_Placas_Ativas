@@ -3,13 +3,17 @@ import openpyxl
 import shutil
 import os
 import traceback
+from transform import Transform
 
 def import_df_final():
 
-    from transform import Transform
-    df_final = Transform.transforming_files()
-
+    df_final = Transform.transforming_df_final()
     return df_final
+
+def import_df_all_placas():
+
+    df_placas_atual= Transform.transforming_df_all_placas()
+    return df_placas_atual
 
 class Load_relat_ativ_pend:
 
@@ -22,36 +26,26 @@ class Load_relat_ativ_pend:
         try:
 
             df_final = import_df_final()
+            df_placas_atual = import_df_all_placas()
 
-            template = r'C:\Users\raphael.almeida\Documents\Ativações Placas\report\ACOMPANHAMENTO_ATIVACOES.xlsx'
+            save_path = r'C:\Users\raphael.almeida\Documents\Ativações Placas\Relatório de Placas Ativadas'
+            df_final_name = 'Movimentação de placas.xlsx'
+            df_all_placas_name = 'Relação total de placas.xlsx'
 
-            wb = openpyxl.load_workbook(filename=template)
+            path1 = os.path.join(save_path, df_final_name)
+            path2 = os.path.join(save_path, df_all_placas_name)
+            
+            df_final.to_excel(path1, index=False, engine='openpyxl')
+            df_placas_atual.to_excel(path2, index=False, engine='openpyxl')
 
-            ws1 = wb['ATIVAÇÕES']
+            #salvando no sharepoint
+            share = r'C:\Users\raphael.almeida\Grupo Unus\analise de dados - Arquivos em excel'
+            share_path1 = os.path.join(share, os.path.basename(path1))
+            share_path2 = os.path.join(share,os.path.basename(path2))
 
-            def get_last_row(sheet):
-                for row in reversed(range(1, sheet.max_row + 1)):
-                    for col in range(1, sheet.max_column + 1):
-                        if sheet.cell(row=row, column=col).value is not None:
-                            return row
-                return 1
+            shutil.copy(path1,share_path1)
+            shutil.copy(path2,share_path2)
 
-            # Encontrar a última linha não vazia em cada aba
-            last_row_ws1 = get_last_row(ws1)
-
-            # Adicionar dados em 'SEGTUCK & STCOOP'
-            for r_idx, row in enumerate(df_final.values, last_row_ws1 + 1):
-                for c_idx, value in enumerate(row, 2):  # Coluna começa em 1
-                    ws1.cell(row=r_idx, column=c_idx, value=value)
-
-            wb.save(r'C:\Users\raphael.almeida\Documents\Ativações Placas\report\ACOMPANHAMENTO_ATIVACOES.xlsx')
-            wb.close()
-
-            # PASSANDO ARQUIVO PARA O DIRETÓRIO DO SHAREPOINT
-            file_path = r'C:\Users\raphael.almeida\Documents\Ativações Placas\report\ACOMPANHAMENTO_ATIVACOES.xlsx'
-            destination_dir  = r'C:\Users\raphael.almeida\Grupo Unus\analise de dados - Arquivos em excel'
-            destination_path = os.path.join(destination_dir, os.path.basename(file_path))
-            shutil.copy(file_path, destination_path)
 
             logging.info('\n ----------------------------------------------------------------------------------')
             logging.info('\n Processo de Carregamento de Dados concluido com sucesso!')

@@ -11,14 +11,15 @@ class Transform:
     def __init__(self) -> None:
         pass
 
-    def transforming_files():
+    def transforming_df_final():
 
         try:
 
             df_ativ = Extract.extract_ativacoes()
             df_renov = Extract.extract_renovacoes()
-            df_cancel = Extract.extract_renovacoes()
-            df_mig_all_placas = Extract.extract_conf_migracoes()
+            df_cancel = Extract.extract_cancelamentos()
+            df_all_placas = Extract.extract_conf_migracoes()
+            
 
 
             # JUNTANDO OS DATAFRAMES
@@ -49,20 +50,20 @@ class Transform:
             # ATUALIZANDO MIGRAÇÕES DE PLACAS (SEGTRUCK & STCOOP ---> VIAVANTE)
             for idx, row in df_final.iterrows():
                 
-                df_filtred = df_mig_all_placas[
-                    (df_mig_all_placas['placa'] == row['placa']) |
-                    (df_mig_all_placas['chassi'] == row['chassi'])
+                df_filtred = df_all_placas[
+                    (df_all_placas['placa'] == row['placa']) |
+                    (df_all_placas['chassi'] == row['chassi'])
                 ]
 
                 if not df_filtred.empty and len(df_filtred['cooperativa'].values) > 1:
 
-                    if df_filtred['cooperativa'].values[1] != row['cooperativa'] and row['status'] != 'CANCELADO':
+                    if df_filtred['cooperativa'].values[0] != row['cooperativa'] and row['status'] != 'CANCELADO':
                         df_final.at[idx, 'status'] = 'MIGRAÇÃO'
 
-                        if df_filtred['cooperativa'].values[1] == 'Segtruck':
+                        if df_filtred['cooperativa'].values[0] == 'Segtruck':
                             df_final.at[idx, 'migration_from'] = 'Segtruck'
 
-                        elif df_filtred['cooperativa'].values[1] == 'Stcoop':
+                        elif df_filtred['cooperativa'].values[0] == 'Stcoop':
                             df_final.at[idx, 'migration_from'] = 'Stcoop'
                         else:
                             df_final.at[idx, 'migration_from'] = 'Viavante'
@@ -89,7 +90,8 @@ class Transform:
             logging.info('\n ----------------------------------------------------------------------------------')
             logging.info(f'Falha ao unir os dataframes: {e}')
             logging.info(traceback.format_exc())
-            
+
+
         try:
             df_final['id_conjunto'] = df_final['id_conjunto'].fillna(0)
             df_final['matricula'] = df_final['matricula'].fillna(0)
@@ -114,6 +116,33 @@ class Transform:
             logging.info(traceback.format_exc())
 
         return df_final
+    
+
+    def transforming_df_all_placas():
+
+        try:
+            df_all_placas = Extract.extract_conf_migracoes()
+            df_all_placas['data_ativacao'] = pd.to_datetime(df_all_placas['data_ativacao'],format='%d/%m/%Y')
+            df_placas_atual = df_all_placas.loc[df_all_placas.groupby('placa')['data_ativacao'].idxmax()]
+
+            logging.info('\n ----------------------------------------------------------------------------------')
+            logging.info('\n Segundo Processo de Transformacao de Dados concluído com sucesso!')
+
+        except Exception as e:
+
+            logging.info('\n ----------------------------------------------------------------------------------')
+            logging.info(f'Falha ao realizar o segundo tratamento de dados: {e}')
+            logging.info(traceback.format_exc())
+
+        return df_placas_atual
+
+
+
+
+
+
+
+
         
 
 
