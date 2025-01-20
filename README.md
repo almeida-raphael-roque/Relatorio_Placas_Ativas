@@ -9,13 +9,13 @@
 
 <br>
 
-    1) As possíveis situações entre as movimentações de placas  são descritas como: "Novas", "Renovadas", "Migração" e "Canceladas"
+1) As possíveis situações entre as movimentações de placas  são descritas como: "Novas", "Renovadas", "Migração" e "Canceladas"
 
     - Todas são analisadas entre as 3 cooperativas e também como acumulado geral
 
 <br>
 
-    2) A outra parte da análise é verificar quantas placas ativas existem nas três cooperativas e no total geral 
+2) A outra parte da análise é verificar quantas placas ativas existem nas três cooperativas e no total geral 
 
 <br>
 
@@ -41,9 +41,6 @@
 
 - haviam _joins_ que não estavam sendo utilizados nas colunas;
 
-- foi substituído "data de ativação" por "data de vigência efetiva", visto que:
-     - o primeiro não retornava valores;
-     - há um delay de alguns dias entre a ativação e a efetiva vigência.
 - a antiga query utilizada para posterior composição de informações de migrações (listagem_mestra) não estava ordenada por data, tendo como efeito, na composição, o equívoco de não pegar o status mais atualizado da placa;
 
 - essa mesma query também não estava paralela às outras consultas, visto que considerava a data atual em seu script, o que é um erro pois o relatório analisa sempre o dia anterior.
@@ -71,10 +68,6 @@
 - foi acrescentada um consulta em SQL para pegar as informações de placas no status 'cancelado' diretamente da base de dados;
 
 - os _joins_ inutilizados foram removidos;
-
-- foi substituído "data de ativação" por "data de vigência efetiva", visto que:
-     - o primeiro não retornava valores;
-     - há um delay de alguns dias entre a ativação e a efetiva vigência.
 
 - criou-se uma nova query "placas_total_ordem" ordenada por data, agora o status mais atual das placas foi contemplado corretamente;
 
@@ -117,7 +110,7 @@
 
 6) Todas as alterações permitiram a construção de um dashboar muito mais organizado, "leve" e coerente com a real situação das placas.
 
-7) Todas as etapas estão organizadas e limpas para entendimento e rastrabilidade
+7) Todas as etapas estão organizadas e limpas para entendimento e rastreabilidade
 
 8) Os passos somados levaram a reduzir o tempo de atualização do relatório completo de 20 minutos (15' Power BI + 5' Python) para 2' 30", total. Uma redução de 87,5% no tempo total gasto para atualizar;
 
@@ -125,7 +118,7 @@
 
 <br><br>
 
-Próximas Etapas
+    Próximas Etapas
 
 1) Comentar as linhas de código para gestão do conhecimento;
 
