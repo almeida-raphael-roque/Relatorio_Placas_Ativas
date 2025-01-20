@@ -57,13 +57,13 @@ class Transform:
 
                 if not df_filtred.empty and len(df_filtred['cooperativa'].values) > 1:
 
-                    if df_filtred['cooperativa'].values[0] != row['cooperativa'] and row['status'] != 'CANCELADO':
+                    if df_filtred['cooperativa'].values[1] != row['cooperativa'] and row['status'] != 'CANCELADO':
                         df_final.at[idx, 'status'] = 'MIGRAÇÃO'
 
-                        if df_filtred['cooperativa'].values[0] == 'Segtruck':
+                        if df_filtred['cooperativa'].values[1] == 'Segtruck':
                             df_final.at[idx, 'migration_from'] = 'Segtruck'
 
-                        elif df_filtred['cooperativa'].values[0] == 'Stcoop':
+                        elif df_filtred['cooperativa'].values[1] == 'Stcoop':
                             df_final.at[idx, 'migration_from'] = 'Stcoop'
                         else:
                             df_final.at[idx, 'migration_from'] = 'Viavante'
