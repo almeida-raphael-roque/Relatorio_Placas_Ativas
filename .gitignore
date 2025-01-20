@@ -6,5 +6,6 @@ bases excel
 file.py
 file2.py
 file3.py
+*.xlsx
 
 
