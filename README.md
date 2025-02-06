@@ -1,127 +1,124 @@
-# Projeto Relatório de Placas Ativadas
+# Activated License Plates Report Project
 
-## 1) Objetivo Principal do Relatório
+## 1) Main Objective of the Report
 
-- O principal objetivo do relatório é acompanhar dois tipos de informação: a movimentação de placas entre as 3 cooperativas existentes e a respectiva quantidade total de placas ativas 
+- The main objective of the report is to monitor two types of information: the movement of license plates among the three existing cooperatives and the respective total number of active plates.
 
-    - Ambas informações são analisadas em um contexto de dia anterior;
-    - A atualização do relatório é diária.
-
-<br>
-
-1) As possíveis situações entre as movimentações de placas  são descritas como: "Novas", "Renovadas", "Migração" e "Canceladas"
-
-    - Todas são analisadas entre as 3 cooperativas e também como acumulado geral
+    - Both types of information are analyzed in the context of the previous day;
+    - The report is updated daily.
 
 <br>
 
-2) A outra parte da análise é verificar quantas placas ativas existem nas três cooperativas e no total geral 
+1) The possible situations regarding license plate movements are described as: "New", "Renewed", "Migration," and "Cancelled."
+
+    - All are analyzed among the three cooperatives and also as a general total.
 
 <br>
 
-## 2) Objetivo Principal do Projeto
+2) The other part of the analysis is to verify how many active plates exist in the three cooperatives and in the overall total.
 
-- O relatório já existia previamente, porém seus processos eram demorados e ineficientes. Ademais, haviam equívocos e redundâncias de análise nas três frentes de construção: 
-    - nas consultas em SQL (queries);
-    - no ETL em Python;
-    - no tratamento e modelagem de dados no Power Query e nas métricas em DAX, respectivamente.
+<br>
 
-- Logo, o objetivo principal do projeto é **tornar efetivo o relatório de acompanhamento de placas**. 
+## 2) Main Objective of the Project
+
+- The report already existed previously, but its processes were time-consuming and inefficient. Additionally, there were errors and redundancies in the analysis across the three areas of construction: 
+    - SQL queries;
+    - ETL in Python;
+    - Data treatment and modeling in Power Query and DAX metrics, respectively.
+
+- Therefore, the main objective of the project is to **make the license plate monitoring report effective**.
     
-    - Efetividade se traduz em torná-lo eficiente (performático e organizado) e eficaz (analisa os dados corretamente)
+    - Effectiveness means making it efficient (performant and organized) and accurate (correctly analyzing the data).
 
 <br>
 
-## 3) Escopo do Projeto
+## 3) Scope of the Project
 
-    Problemática
+    Problematic
 
-1) **Consulta em SQL (query)**
-- não constavam informações de cancelamentos, essa informações dependiam de uma planilha em excel preenchida de maneira manual, logo havia vários dias em que não constavam informações ou que haviam dados fora do padrão
+1) **SQL Query**
+- Cancellation information was not included; such data depended on an Excel sheet filled out manually, resulting in missing or inconsistent information on several days;
 
-- haviam _joins_ que não estavam sendo utilizados nas colunas;
+- There were unused joins in the query;
 
-- a antiga query utilizada para posterior composição de informações de migrações (listagem_mestra) não estava ordenada por data, tendo como efeito, na composição, o equívoco de não pegar o status mais atualizado da placa;
+- The previous query used for composing migration information ("listagem_mestra") was not ordered by date, leading to errors where the most recent status of the plate was not considered in the composition;
 
-- essa mesma query também não estava paralela às outras consultas, visto que considerava a data atual em seu script, o que é um erro pois o relatório analisa sempre o dia anterior.
-
-<br>
-
-2) **ETL em Python**
-- o Transform continha repetição de funções entre cooperativas que já haviam sido escritas, deixando a outra cooperativa sem tratamento;
-
-- o Load atualizava informações de maneira incremental, não considerando a movimentação de placas, logo as primeiras composições da tabela depois de um tempo ficavam consequentemente desatualizadas, e mesmo assim compunham o resultado final geral de placas
+- This same query was not aligned with the others, as it used the current date in its script, which is incorrect since the report always analyzes the previous day.
 
 <br>
 
-3) **Tratamento e Modelagem de Dados (Power BI)**
-- o tratamento em Power Query era redundante pois filtrava informações do relatório gerado e o espelhava na tabela "f_vendas", filtrando-a pela "placa", porém essa mesma tabela tem o princípio de construção muito semelhante ao do relatório, o que gerava redução significativa na performance de atualização do dashboard e perda de dados originais;
+2) **ETL in Python**
+- The Transform phase had repeated functions between cooperatives, while one cooperative's data remained untreated;
 
-- a modelagem em dados, apesar de correta continha informações demais, métricas desorganizadas e colunas calculadas que dificultavam não só a performance do dashboard, mas também prejudicando a rastreabilidade e manutenção do relatório e do correto fluxo de informações.
+- The Load phase updated information incrementally, without considering plate movements. As a result, the initial compositions of the table became outdated over time, yet they still contributed to the overall final plate count.
+
+<br>
+
+3) **Data Treatment and Modeling (Power BI)**
+- The treatment in Power Query was redundant, as it filtered information from the generated report and mirrored it in the "f_vendas" table by "license plate." However, this same table was built with a principle very similar to the report itself, significantly reducing dashboard update performance and causing data loss;
+
+- The data modeling, though correct, contained too much information, disorganized metrics, and calculated columns, which not only hindered dashboard performance but also complicated report maintenance and traceability of the information flow.
 
 <br><br>
 
+    Solutions
 
-    Soluções
+1) **SQL Query**
+- A SQL query was added to retrieve cancellation information directly from the database;
 
-1) **Consulta em SQL (query)**
-- foi acrescentada um consulta em SQL para pegar as informações de placas no status 'cancelado' diretamente da base de dados;
+- Unused joins were removed;
 
-- os _joins_ inutilizados foram removidos;
+- A new query, "placas_total_ordem," was created, ordered by date. This ensured the most recent plate status was correctly reflected;
 
-- criou-se uma nova query "placas_total_ordem" ordenada por data, agora o status mais atual das placas foi contemplado corretamente;
+- In this query, the current date was excluded from the script since the report always analyzes the previous day;
 
-- desconsiderou-se, nessa mesma query, a data atual em seu script, pois o relatório analisa sempre o dia anterior;
-
-- para a melhora do script, tanto em SQL quanto em Python, aglutinou-se as queries por cooperativa em uma query só, que as diferencia por cooperativa.
-
-<br>
-
-2) **ETL em Python**
-- os equívocos já apresentados na problemática do Transform foram corrigidos, as devidas alterações para o acréscima da query de cancelamentos também foram realizadas;
-
-- no Transform, também foi acrescentado uma consulta para composição de relatório apenas com placas com os status mais atuais, que é o correto a se analisar como um todo;
-
-- o Load gera duas bases, uma que retorna o status atual de placas (considerando apenas as que foram atualizadas no âmbito diário), e outra que retorna o total geral de placas com o respectivo status corretamente atualizado agora.
+- For script improvement, both in SQL and Python, queries were consolidated into a single query that distinguishes data by cooperative.
 
 <br>
 
-3) **Tratamento e Modelagem de Dados (Power BI)**
-- o tratamento em Power Query foi simplificado, há agora apenas duas fontes de dados oriundas do SharePoint; 
+2) **ETL in Python**
+- The errors mentioned in the Transform phase were corrected, and the necessary adjustments to incorporate cancellation data were made;
 
-- as métricas foram organizadas e consequentemente diminuídas, resultando em maior rastrabilidade, coerência e performance do dashboard.
- 
+- In the Transform phase, a query was also added to create a report that only considers plates with the most recent status, which is the correct approach for analysis;
 
+- The Load phase now generates two datasets: one that returns the current status of plates (considering only those updated daily) and another that returns the overall total of plates with their respective status correctly updated.
 
-<br><br>
+<br>
 
+3) **Data Treatment and Modeling (Power BI)**
+- The treatment in Power Query was simplified, now relying on only two data sources from SharePoint;
 
-    Resultados
-
-1) O incremento da informação de placas canceladas diretamente da base de dados diminuiu os erros humanos e tornou a atualização rápida, diária e correta;
-
-2) A aglutinação das consultas por _UNION ALL_ deixou as consultas em SQL e o código mais organizado e "limpo";
-
-3) A correta ordenação da query que pega o total de placas pela data de ativação (bem como os demais ajustes realizados) tornou possível retornar placas apenas com o status mais atualizado, solucionando o problema de desatualização de placas que constavam no relatório final;
-
-4) Todos os equívocos no código ETL em python foram corrigidos;
-
-5) Por gerar duas bases de dados, uma para movimentação de placas e a outra para composição total de placas simplificou-se o posterior tratamento dos dados no Power Query;
-
-6) Todas as alterações permitiram a construção de um dashboard muito mais organizado, "leve" e coerente com a real situação das placas.
-
-7) Todas as etapas estão organizadas e limpas para entendimento e rastreabilidade
-
-8) Os passos somados levaram a reduzir o tempo de atualização do relatório completo de 20 minutos (15' Power BI + 5' Python) para 2' 30", total. Uma redução de 87,5% no tempo total gasto para atualizar;
-
-9) O relatório final contempla a correta situação de placas nas 3 cooperativas.
-
-10) A gerência e diretoria conseguem analisar com segurança e confiabilidade a situação de placas na empresa, tomar melhores decisões se baseando no relatório disponibilzado e, consequentemente, aumentar o faturamento da empresa. 
+- The metrics were reorganized and reduced, resulting in better traceability, coherence, and dashboard performance.
 
 <br><br>
 
-    Próximas Etapas
+    Results
 
-1) Comentar as linhas de código para gestão do conhecimento;
+1) Adding cancellation information directly from the database reduced human errors and enabled fast, daily, and accurate updates;
 
-2) Evidenciar, no dashboard, que a diferença entre resultados diários na métrica "Placas carteira dia atual", do dia anterior, "Placas carteira dia anterior", do dia atual, se dá em função da mudança de status de placas de ativos para outros status disponíveis.
+2) Consolidating queries with a `UNION ALL` made the SQL queries and the code more organized and "clean";
+
+3) Correctly ordering the query that retrieves the total plates by activation date (as well as other adjustments made) allowed the return of plates with only the most updated status, solving the issue of outdated data in the final report;
+
+4) All errors in the ETL Python code were corrected;
+
+5) Generating two datasets—one for plate movements and another for the total plate composition—simplified subsequent data treatment in Power Query;
+
+6) All changes enabled the creation of a much more organized, "light," and coherent dashboard that reflects the true state of license plates;
+
+7) All stages are now organized and easy to understand and trace;
+
+8) These steps reduced the time required to update the complete report from 20 minutes (15' Power BI + 5' Python) to 2 minutes and 30 seconds, a total reduction of 87.5% in update time;
+
+9) The final report accurately reflects the plate situation across the three cooperatives;
+
+10) Management and executives can safely and confidently analyze the plate situation within the company, make better decisions based on the provided report, and consequently increase the company's revenue.
+
+<br><br>
+
+    Next Steps
+
+1) Add comments to the code for knowledge management;
+
+2) Highlight in the dashboard that the difference between daily results in the metric "Plates Portfolio Current Day" (from the previous day) and "Plates Portfolio Previous Day" (from the current day) is due to changes in plate status from active to other available statuses. 
+

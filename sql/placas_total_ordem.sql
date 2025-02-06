@@ -24,8 +24,7 @@ SELECT * FROM(
     LEFT JOIN silver.insurance_trailer itt ON itt.id=irsct.id_trailer
 
 
-    WHERE COALESCE(iv.board,it.board,itt.board) IS NOT NULL
-    AND COALESCE(iv.chassi,it.chassi,itt.chassi) IS NOT NULL
+
 
 
     ---------------------------------------------------------------------------------
@@ -58,8 +57,7 @@ SELECT * FROM(
     LEFT JOIN stcoop.insurance_trailer itt ON itt.id=irsct.id_trailer
 
 
-    WHERE COALESCE(iv.board,it.board,itt.board) IS NOT NULL
-    AND COALESCE(iv.chassi,it.chassi,itt.chassi) IS NOT NULL
+
 
 
     ---------------------------------------------------------------------------------
@@ -91,8 +89,7 @@ SELECT * FROM(
     LEFT JOIN viavante.insurance_trailer itt ON itt.id=irsct.id_trailer
 
 
-    WHERE COALESCE(iv.board,it.board,itt.board) IS NOT NULL
-    AND COALESCE(iv.chassi,it.chassi,itt.chassi) IS NOT NULL
+
 )
 WHERE "data_ativacao" <> current_date
 ORDER BY "data_ativacao" DESC
